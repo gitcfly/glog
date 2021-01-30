@@ -10,17 +10,11 @@ import (
 	"github.com/fatih/color"
 )
 
-var ProjectPath = ""
-
-func init() {
-	path, _ := os.Getwd()
-	ProjectPath = path
-}
-
 func Basef(level string, format string) string {
 	ft := "[%v]%v[%v] "
 	_, f, l, _ := runtime.Caller(2)
-	f = f[len(ProjectPath)+1:]
+	path, _ := os.Getwd()
+	f = f[len(path)+1:]
 	prefix := fmt.Sprintf(ft, level, time.Now().Format("2006-01-02/15:04:05"), f+":"+strconv.Itoa(l))
 	return prefix + format
 }
@@ -36,8 +30,9 @@ func Base(level string, args ...interface{}) string {
 	}
 	va := fmt.Sprintf(format, args...)
 	ft := "[%v]%v[%v] " + va
+	path, _ := os.Getwd()
 	_, f, l, _ := runtime.Caller(2)
-	f = f[len(ProjectPath)+1:]
+	f = f[len(path)+1:]
 	prefix := fmt.Sprintf(ft, level, time.Now().Format("2006-01-02/15:04:05"), f+":"+strconv.Itoa(l))
 	return prefix
 }
