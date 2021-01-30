@@ -39,7 +39,7 @@ func Base(level string, args ...interface{}) string {
 		ft = "[%v]%v[%v] " + va
 	}
 	_, f, l, _ := runtime.Caller(2)
-	f = f[strings.LastIndex(f, "glog")+8:]
+	f = f[strings.LastIndex(f, Pname)+len(Pname):]
 	prefix := fmt.Sprintf(ft, level, time.Now().Format("2006-01-02 15:04:05"), f+":"+strconv.Itoa(l))
 	return prefix
 }
