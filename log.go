@@ -2,11 +2,12 @@ package glog
 
 import (
 	"fmt"
-	"github.com/fatih/color"
 	"os"
 	"runtime"
 	"strconv"
 	"time"
+
+	"github.com/fatih/color"
 )
 
 var ProjectPath = ""
