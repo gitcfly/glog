@@ -3,6 +3,7 @@ package glog
 import (
 	"fmt"
 	"github.com/fatih/color"
+	"os"
 	"runtime"
 	"strconv"
 	"strings"
@@ -10,6 +11,11 @@ import (
 )
 
 var Pname = "glog"
+
+func init() {
+	path, _ := os.Getwd()
+	fmt.Println("当前路径:" + path)
+}
 
 func Basef(level string, format string) string {
 	ft := "[%v]%v[%v] "
