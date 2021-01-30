@@ -19,12 +19,9 @@ func init() {
 
 func Basef(level string, format string) string {
 	ft := "[%v]%v[%v] "
-	if len(level) <= 4 {
-		ft = "[%v] %v[%v] "
-	}
 	_, f, l, _ := runtime.Caller(2)
 	f = f[len(ProjectPath)+1:]
-	prefix := fmt.Sprintf(ft, level, time.Now().Format("2006-01-02 15:04:05"), f+":"+strconv.Itoa(l))
+	prefix := fmt.Sprintf(ft, level, time.Now().Format("2006-01-02/15:04:05"), f+":"+strconv.Itoa(l))
 	return prefix + format
 }
 
@@ -38,20 +35,15 @@ func Base(level string, args ...interface{}) string {
 		format += " %v"
 	}
 	va := fmt.Sprintf(format, args...)
-	ft := ""
-	if len(level) <= 4 {
-		ft = "[%v] %v[%v] " + va
-	} else {
-		ft = "[%v]%v[%v] " + va
-	}
+	ft := "[%v]%v[%v] " + va
 	_, f, l, _ := runtime.Caller(2)
 	f = f[len(ProjectPath)+1:]
-	prefix := fmt.Sprintf(ft, level, time.Now().Format("2006-01-02 15:04:05"), f+":"+strconv.Itoa(l))
+	prefix := fmt.Sprintf(ft, level, time.Now().Format("2006-01-02/15:04:05"), f+":"+strconv.Itoa(l))
 	return prefix
 }
 
 func Debugf(format string, a ...interface{}) {
-	format = Basef("DEBUG", format)
+	format = Basef("DEBU", format)
 	color.Blue(format, a...)
 }
 
@@ -66,12 +58,12 @@ func Warnf(format string, a ...interface{}) {
 }
 
 func Errorf(format string, a ...interface{}) {
-	format = Basef("ERROR", format)
+	format = Basef("ERRO", format)
 	color.Red(format, a...)
 }
 
 func Debug(a ...interface{}) {
-	format := Base("DEBUG", a...)
+	format := Base("DEBU", a...)
 	color.Blue(format)
 }
 
@@ -86,6 +78,6 @@ func Warn(a ...interface{}) {
 }
 
 func Error(a ...interface{}) {
-	format := Base("ERROR", a...)
+	format := Base("ERRO", a...)
 	color.Red(format)
 }
