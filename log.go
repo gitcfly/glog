@@ -17,7 +17,7 @@ func Basef(level string, format string) string {
 		ft = "[%v] %v[%v] "
 	}
 	_, f, l, _ := runtime.Caller(2)
-	f = f[strings.LastIndex(f, Pname)+len(Pname):]
+	f = f[strings.LastIndex(f, Pname)+len(Pname)+1:]
 	prefix := fmt.Sprintf(ft, level, time.Now().Format("2006-01-02 15:04:05"), f+":"+strconv.Itoa(l))
 	return prefix + format
 }
@@ -39,7 +39,7 @@ func Base(level string, args ...interface{}) string {
 		ft = "[%v]%v[%v] " + va
 	}
 	_, f, l, _ := runtime.Caller(2)
-	f = f[strings.LastIndex(f, Pname)+len(Pname):]
+	f = f[strings.LastIndex(f, Pname)+len(Pname)+1:]
 	prefix := fmt.Sprintf(ft, level, time.Now().Format("2006-01-02 15:04:05"), f+":"+strconv.Itoa(l))
 	return prefix
 }
