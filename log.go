@@ -10,75 +10,124 @@ import (
 	"github.com/fatih/color"
 )
 
-var RootName = ""
+const (
+	DEBUG string = "DEBUG"
+	INFO  string = "INFO"
+	WARN  string = "WARN"
+	ERROR string = "ERROR"
+	FATAL string = "FATAL"
+)
 
-func SetRootName(name string) {
-	RootName = name
+var LNumb = map[string]int{
+	DEBUG: 1,
+	INFO:  2,
+	WARN:  3,
+	ERROR: 4,
+	FATAL: 5,
 }
 
-func Basef(level string, format string) string {
-	ft := "[%v]%v[%v] "
-	_, f, l, _ := runtime.Caller(2)
-	idx := strings.Index(f, RootName)
-	f = f[idx+len(RootName)+1:]
-	prefix := fmt.Sprintf(ft, level, time.Now().Format("2006-01-02/15:04:05"), f+":"+strconv.Itoa(l))
-	return prefix + format
+var Conf = &Cfg{Level: DEBUG, LevCut: true}
+
+type Cfg struct {
+	PName  string
+	Level  string
+	LevCut bool
 }
 
-func Base(level string, args ...interface{}) string {
-	format := ""
-	lt := len(args)
-	if lt > 0 {
-		format = "%v"
+func CfgLog(cfg *Cfg) {
+	Conf = cfg
+}
+
+func BaseFormat(level string, format string) (string, bool) {
+	if LNumb[level] < LNumb[Conf.Level] {
+		return "", false
 	}
-	for i := 1; i < lt; i++ {
-		format += " %v"
+	if Conf.LevCut {
+		level = level[:4]
 	}
+	_, fe, l, _ := runtime.Caller(2)
+	idx := strings.Index(fe, Conf.PName)
+	fie := fe[idx+len(Conf.PName)+1:] + ":" + strconv.Itoa(l)
+	tmef := time.Now().Format("2006-01-02/15:04:05")
+	prefix := fmt.Sprintf("[%v]%v[%v] ", level, tmef, fie)
+	return prefix + format, true
+}
+
+func Base(level string, args ...interface{}) (string, bool) {
+	if LNumb[level] < LNumb[Conf.Level] {
+		return "", false
+	}
+	if Conf.LevCut {
+		level = level[:4]
+	}
+	var format = strings.Repeat(" %v", len(args))
+	format = strings.TrimLeft(format, " ")
 	va := fmt.Sprintf(format, args...)
 	ft := "[%v]%v[%v] " + va
 	_, f, l, _ := runtime.Caller(2)
-	idx := strings.Index(f, RootName)
-	f = f[idx+len(RootName)+1:]
-	prefix := fmt.Sprintf(ft, level, time.Now().Format("2006-01-02/15:04:05"), f+":"+strconv.Itoa(l))
-	return prefix
+	idx := strings.Index(f, Conf.PName)
+	fe := f[idx+len(Conf.PName)+1:] + ":" + strconv.Itoa(l)
+	tmef := time.Now().Format("2006-01-02/15:04:05")
+	prefix := fmt.Sprintf(ft, level, tmef, fe)
+	return prefix, true
 }
 
 func Debugf(format string, a ...interface{}) {
-	format = Basef("DEBU", format)
-	color.Blue(format, a...)
+	if lgf, ok := BaseFormat(DEBUG, format); ok {
+		color.Blue(lgf, a...)
+	}
 }
 
 func Infof(format string, a ...interface{}) {
-	format = Basef("INFO", format)
-	color.Cyan(format, a...)
+	if lgf, ok := BaseFormat(INFO, format); ok {
+		color.Cyan(lgf, a...)
+	}
 }
 
 func Warnf(format string, a ...interface{}) {
-	format = Basef("WARN", format)
-	color.Yellow(format, a...)
+	if lgf, ok := BaseFormat(WARN, format); ok {
+		color.Yellow(lgf, a...)
+	}
 }
 
 func Errorf(format string, a ...interface{}) {
-	format = Basef("ERRO", format)
-	color.Red(format, a...)
+	if lgf, ok := BaseFormat(ERROR, format); ok {
+		color.Red(lgf, a...)
+	}
+}
+
+func Fatalf(format string, a ...interface{}) {
+	if lgf, ok := BaseFormat(DEBUG, format); ok {
+		color.Magenta(lgf, a...)
+	}
 }
 
 func Debug(a ...interface{}) {
-	format := Base("DEBU", a...)
-	color.Blue(format)
+	if lgf, ok := Base(DEBUG, a...); ok {
+		color.Blue(lgf)
+	}
 }
 
 func Info(a ...interface{}) {
-	format := Base("INFO", a...)
-	color.Cyan(format)
+	if lgf, ok := Base(INFO, a...); ok {
+		color.Cyan(lgf)
+	}
 }
 
 func Warn(a ...interface{}) {
-	format := Base("WARN", a...)
-	color.Yellow(format)
+	if lgf, ok := Base(WARN, a...); ok {
+		color.Yellow(lgf)
+	}
 }
 
 func Error(a ...interface{}) {
-	format := Base("ERRO", a...)
-	color.Red(format)
+	if lgf, ok := Base(ERROR, a...); ok {
+		color.Red(lgf)
+	}
+}
+
+func Fatal(a ...interface{}) {
+	if lgf, ok := Base(FATAL, a...); ok {
+		color.Magenta(lgf)
+	}
 }
