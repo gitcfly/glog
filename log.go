@@ -29,7 +29,6 @@ var LNumb = map[string]int{
 var Conf = &Cfg{Level: DEBUG, LevCut: true}
 
 type Cfg struct {
-	PName  string
 	Level  string
 	LevCut bool
 }
@@ -46,8 +45,8 @@ func BaseFormat(level string, format string) (string, bool) {
 		level = level[:4]
 	}
 	_, fe, l, _ := runtime.Caller(2)
-	idx := strings.Index(fe, Conf.PName)
-	fie := fe[idx+len(Conf.PName)+1:] + ":" + strconv.Itoa(l)
+	idx := strings.LastIndex(fe, "/")
+	fie := fe[idx+1:] + ":" + strconv.Itoa(l)
 	tmef := time.Now().Format("2006-01-02/15:04:05")
 	prefix := fmt.Sprintf("[%v]%v[%v] ", level, tmef, fie)
 	return prefix + format, true
@@ -65,8 +64,8 @@ func Base(level string, args ...interface{}) (string, bool) {
 	va := fmt.Sprintf(format, args...)
 	ft := "[%v]%v[%v] " + va
 	_, f, l, _ := runtime.Caller(2)
-	idx := strings.Index(f, Conf.PName)
-	fe := f[idx+len(Conf.PName)+1:] + ":" + strconv.Itoa(l)
+	idx := strings.LastIndex(f, "/")
+	fe := f[idx+1:] + ":" + strconv.Itoa(l)
 	tmef := time.Now().Format("2006-01-02/15:04:05")
 	prefix := fmt.Sprintf(ft, level, tmef, fe)
 	return prefix, true
